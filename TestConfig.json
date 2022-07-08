@@ -1,0 +1,10 @@
+[
+    {
+        "website": "biggo",
+        "name": "Mx+Anywhere+2S",
+        "minPrice": 500,
+        "maxPrice": 700, 
+        "blackList": ["包","袋","殼","電池","貼","腳","滾輪","G300s","正品"],
+        "sleepTime": 600
+    }
+]
