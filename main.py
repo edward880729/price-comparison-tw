@@ -7,9 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import time
 import json 
-import sqlite3
 import requests
 import bitly_api
+from dbTool import *
 
 PRODUCT_CONFIG_PATH = "./TestConfig.json"
 #PRODUCT_CONFIG_PATH = "./WatchProductConfig.json"
@@ -57,19 +57,15 @@ class WatchProduct:
 			    "sleepTime": self.sleepTime
 				}
 
-	def insertIntoDB(self, db) -> None:
-		cursor = db.cursor()
-		cursor.execute('''
+	def insertIntoDB(self) -> None:
+		dbTool.execute('''
 			INSERT INTO WatchProduct(website, name, minPrice, maxPrice, blackList, sleepTime)
 			VALUES(:website, :name, :minPrice, :maxPrice, :blackList, :sleepTime)
 			''',self.getDict()
 		)
-		db.commit()
-		cursor.close()
 		
-	def updateDB(self, db) -> None:
-		cursor = db.cursor()
-		cursor.execute('''
+	def updateDB(self) -> None:
+		dbTool.execute('''
 			UPDATE WatchProduct	SET
 				minPrice = :minPrice, 
 				maxPrice = :maxPrice, 
@@ -78,41 +74,30 @@ class WatchProduct:
 			WHERE website = :website
 				and name = :name
 		''',self.getDict())
-		db.commit()
-		cursor.close()
 
-	def getID(self, db) -> None:
-		db = sqlite3.connect(DB_PATH)
-		cursor = db.cursor()
-		cursor.execute('''  SELECT watchProductID 
+	def getID(self) -> None:
+		result = dbTool.execute('''  SELECT watchProductID 
 							FROM WatchProduct
 							where website = :website 
 								and name = :name
 						''',self.getDict())
-		self.ID = cursor.fetchone()[0]
-		cursor.close()
-		#print(self.ID)
+		self.ID = result[0][0]
 	
-	def isExistInDB(self, db) -> bool:
-		cursor = db.cursor()
-		cursor.execute('''
+	def isExistInDB(self) -> bool:
+		result = dbTool.checkIsExist('''
 			SELECT 1 
 			FROM WatchProduct
 			WHERE website = :website
 				AND name = :name
 		''',self.getDict())
-		if not cursor.fetchone():
-			cursor.close()
-			return False
-		cursor.close()
-		return True
+		return result
 
-	def insertOrUpdateDB(self, db) -> None:
-		if self.isExistInDB(db):
-			self.updateDB(db)
+	def insertOrUpdateDB(self) -> None:
+		if self.isExistInDB():
+			self.updateDB()
 		else:
-			self.insertIntoDB(db)	
-		self.getID(db)
+			self.insertIntoDB()	
+		self.getID()
 
 
 
@@ -136,19 +121,14 @@ class SearchResult:
 			    "href": self.href
 				}
 
-	def insertIntoDB(self, db) -> None:
-		cursor = db.cursor()
-		cursor.execute('''
+	def insertIntoDB(self) -> None:
+		dbTool.execute('''
 			INSERT INTO SearchResult(watchProductID, title, price, historyID, href, createDate)
 			VALUES(:watchProductID, :title, :price, :historyID, :href, datetime('now','localtime'))
-			''',self.getDict()
-		)
-		db.commit()
-		cursor.close()
+			''',self.getDict())
 
-	def isExistInDB(self, db) -> bool:
-		cursor = db.cursor()
-		cursor.execute('''
+	def isExistInDB(self) -> bool:
+		result = dbTool.checkIsExist('''
 			SELECT 1 
 			FROM(
 				select * 
@@ -160,15 +140,10 @@ class SearchResult:
 			) Z
 			WHERE Z.price = :price
 		''',self.getDict())
-		if not cursor.fetchone():
-			cursor.close()
-			return False
-		cursor.close()
-		return True
+		return result
 
-	def getLastPrice(self, db) -> None:
-		cursor = db.cursor()
-		cursor.execute('''
+	def getLastPrice(self) -> None:
+		result = dbTool.execute('''
 			select price 
 			from SearchResult X
 			where X.watchProductID = :watchProductID
@@ -176,17 +151,15 @@ class SearchResult:
 			order by createDate desc
 			limit 1 
 		''',self.getDict())
-		result = cursor.fetchone()
-		cursor.close()
 		if result:
-			self.lastPrice = result[0]
+			self.lastPrice = result[0][0]
 		else:
 			self.lastPrice = 0
 
-	def insertIfNotExist(self, db) -> None:
-		self.getLastPrice(db)
+	def insertIfNotExist(self) -> None:
+		self.getLastPrice()
 		if self.price < self.lastPrice or self.lastPrice == 0:
-			self.insertIntoDB(db)
+			self.insertIntoDB()
 			if USE_LINE_NOTIFICATION:
 				self.lineNotifyMessage()
 
@@ -263,46 +236,26 @@ def checkBlackList(s: str, blackList: List[str]) -> bool:
 			return False
 	return True
 
-def dbInit(db):
-	cursor = db.cursor()
-	cursor.execute('''CREATE TABLE IF NOT EXISTS WatchProduct(
-						watchProductID INTEGER PRIMARY KEY AUTOINCREMENT,
-						website varchar(50),
-						name nvarchar(100),
-						minPrice INTEGER,
-						maxPrice INTEGER,
-						blackList nvarchar(1000),
-						sleepTime INTEGER
-	)''')
-	cursor.execute('''CREATE TABLE IF NOT EXISTS SearchResult(
-						searchResultID INTEGER PRIMARY KEY AUTOINCREMENT,
-						watchProductID INTEGER,
-						title varchar(500),
-						price INTEGER,
-						historyID varchar(100),
-						href nvarchar(500),
-						createDate datetime
-	)''')
-	db.commit()
+
 
 
 def main():
+	global dbTool
 	watchProductList = []
-	db = sqlite3.connect(DB_PATH)
-	dbInit(db)
+	dbTool = DBTool(DB_PATH)
 
 	with open(PRODUCT_CONFIG_PATH,"r",encoding="utf-8") as f:
 		data = json.load(f)
 		for obj in data:
 			watchProduct = WatchProduct(**obj)
-			watchProduct.insertOrUpdateDB(db)
+			watchProduct.insertOrUpdateDB()
 			watchProductList.append(watchProduct)
 
 	for watchProduct in watchProductList:
 		products = getProductElementList(watchProduct)
 
 		for obj in products:
-			obj.insertIfNotExist(db)
+			obj.insertIfNotExist()
 			print(obj.title)
 			print(obj.price)
 			print(obj.href)
