@@ -5,33 +5,29 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.chrome.webdriver import WebDriver
 import time
 import json 
 import requests
 import bitly_api
 from dbTool import *
+import configparser
 
-PRODUCT_CONFIG_PATH = "./TestConfig.json"
-#PRODUCT_CONFIG_PATH = "./WatchProductConfig.json"
-DB_PATH = "./comparePrice.db"
-#DB_PATH = "./WatchProduct.db"
-CHROME_PATH = r'C:\Program Files\Google\Chrome\Application\chrome.exe'#'/usr/bin/google-chrome'
-#CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
-WINDOW_SIZE = "1920,1080"
-USE_LINE_NOTIFICATION = False
-LINE_TOKEN = ""
-USE_BITLY = False
-BITLY_ACCESS_TOKEN =""
+config = configparser.ConfigParser()
+config.read('config.ini')
+config = config["MAIN"]
+
+PRODUCT_CONFIG_PATH = config["PRODUCT_CONFIG_PATH"]
+DB_PATH = config["DB_PATH"]
+CHROME_PATH = config["CHROME_PATH"]
+WINDOW_SIZE = config["WINDOW_SIZE"]
+USE_LINE_NOTIFICATION = config["USE_LINE_NOTIFICATION"]
+LINE_TOKEN = config["LINE_TOKEN"]
+USE_BITLY = config["USE_BITLY"]
+BITLY_ACCESS_TOKEN = config["BITLY_ACCESS_TOKEN"]
 
 
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
-chrome_options.add_argument("--log-level=3")
-chrome_options.add_argument("--ignore-certificate-errors")
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.binary_location = CHROME_PATH
+
 
 #while(1): 
 
@@ -209,11 +205,7 @@ def getProductElementList(wp: WatchProduct) -> List[SearchResult]:
 	page = 1
 	resultCount = 0
 	while 1:
-		#browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-		service=Service(ChromeDriverManager().install())
-		browser = webdriver.Chrome(service=service, chrome_options=chrome_options)
-		
-
+		browser = getBrowser()
 		match wp.website:
 			case "biggo":
 				browser.get("https://biggo.com.tw/s/"+str(wp.name)+"/?price="+str(wp.minPrice)+"-"+str(wp.maxPrice)+"&sort=lp&p="+str(page))  
@@ -221,7 +213,6 @@ def getProductElementList(wp: WatchProduct) -> List[SearchResult]:
 		
 		time.sleep(5)
 		page += 1
-		#browser.close()
 		if resultCount == 0:
 			resultCount = getResultCount(browser)
 
@@ -236,8 +227,19 @@ def checkBlackList(s: str, blackList: List[str]) -> bool:
 			return False
 	return True
 
+def getBrowser() -> WebDriver:
+	chrome_options = Options()
+	chrome_options.add_argument("--headless")
+	chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+	chrome_options.add_argument("--log-level=3")
+	chrome_options.add_argument("--ignore-certificate-errors")
+	chrome_options.add_argument("--disable-extensions")
+	chrome_options.add_argument("--disable-gpu")
+	chrome_options.binary_location = CHROME_PATH
 
-
+	service = Service(ChromeDriverManager().install())
+	browser = webdriver.Chrome(service=service, chrome_options=chrome_options)
+	return browser
 
 def main():
 	global dbTool
