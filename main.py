@@ -12,11 +12,14 @@ import requests
 import bitly_api
 from dbTool import *
 import configparser
+import concurrent.futures
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 config = config["MAIN"]
 
+DEBUG = config["DEBUG"]
+MAX_THREADS = int(config["MAX_THREADS"])
 PRODUCT_CONFIG_PATH = config["PRODUCT_CONFIG_PATH"]
 DB_PATH = config["DB_PATH"]
 CHROME_PATH = config["CHROME_PATH"]
@@ -253,15 +256,15 @@ def main():
 			watchProduct.insertOrUpdateDB()
 			watchProductList.append(watchProduct)
 
-	for watchProduct in watchProductList:
-		products = getProductElementList(watchProduct)
-
-		for obj in products:
-			obj.insertIfNotExist()
-			print(obj.title)
-			print(obj.price)
-			print(obj.href)
-			print("------------------")
+	with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+		for products in executor.map(getProductElementList, watchProductList):
+			for obj in products:
+				obj.insertIfNotExist()
+				if DEBUG:
+					print(obj.title)
+					print(obj.price)
+					print(obj.href)
+					print("------------------")
 
 
 if __name__ == "__main__":
