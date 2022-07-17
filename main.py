@@ -24,7 +24,7 @@ PRODUCT_CONFIG_PATH = config["PRODUCT_CONFIG_PATH"]
 DB_PATH = config["DB_PATH"]
 CHROME_PATH = config["CHROME_PATH"]
 WINDOW_SIZE = config["WINDOW_SIZE"]
-USE_LINE_NOTIFICATION = config["USE_LINE_NOTIFICATION"]
+USE_LINE_NOTIFICATION = config.getboolean("USE_LINE_NOTIFICATION")
 LINE_TOKEN = config["LINE_TOKEN"]
 USE_BITLY = config["USE_BITLY"]
 BITLY_ACCESS_TOKEN = config["BITLY_ACCESS_TOKEN"]
@@ -183,9 +183,11 @@ class SearchResult:
 	
 
 # 取得結果筆數
-def getResultCount(browser: webdriver) -> int:
-	resultStr = browser.find_elements(by=By.CLASS_NAME, value="mr10")[0].text
-	resultCount = int(resultStr[2:].split("筆")[0])
+def getResultCountfromBrowser(browser: WebDriver, website: str) -> int:
+	match website:
+		case "biggo":
+			resultStr = browser.find_elements(by=By.CLASS_NAME, value="mr10")[0].text
+			resultCount = int(resultStr[2:].split("筆")[0])
 	return resultCount
 
 # 轉換Element List為Product List				 
@@ -198,6 +200,11 @@ def genProductList(productElementList: List[WebElement], wp: WatchProduct) -> Li
 				price = int(productElement.get_attribute("data-price"))
 				historyID = productElement.get_attribute("data-historyid")
 				href = productElement.get_attribute("data-href")
+			case "shopee":
+				title = productElement["item_basic"]["name"]
+				price = int(productElement['item_basic']['price']/100000)
+				historyID = productElement['item_basic']['itemid']
+				href = "https://shopee.tw/product/{}/{}".format(productElement['item_basic']['shopid'], historyID)
 		if checkBlackList(title, wp.blackList):
 			resultList.append(SearchResult(wp.ID, title, price, historyID, href))
 	return resultList
@@ -208,19 +215,25 @@ def getProductElementList(wp: WatchProduct) -> List[SearchResult]:
 	page = 1
 	resultCount = 0
 	while 1:
-		browser = getBrowser()
 		match wp.website:
 			case "biggo":
-				browser.get("https://biggo.com.tw/s/"+str(wp.name)+"/?price="+str(wp.minPrice)+"-"+str(wp.maxPrice)+"&sort=lp&p="+str(page))  
+				browser = getBrowser()
+				browser.get("https://biggo.com.tw/s/{}/?price={}-{}&sort=lp&p={}".format(wp.name, wp.minPrice, wp.maxPrice, page))  
 				resultElementList.extend(browser.find_elements(by=By.CLASS_NAME, value="gaobj ")) #商品List
-		
-		time.sleep(5)
-		page += 1
-		if resultCount == 0:
-			resultCount = getResultCount(browser)
-
-		if len(resultElementList) >= resultCount:
-			break
+				if resultCount == 0:
+					resultCount = getResultCountfromBrowser(browser, wp.website)
+				if len(resultElementList) >= resultCount:
+					break
+				page += 1
+				time.sleep(5)
+			case "shopee":
+				data = requests.get("https://shopee.tw/api/v4/search/search_items?by=price&keyword={}&limit=100&newest={}&order=asc&page_type=search&price_max={}&price_min={}&scenario=PAGE_GLOBAL_SEARCH&skip_autocorrect=1&version=2".format(wp.name, resultCount, wp.maxPrice, wp.minPrice))  
+				result = data.json()
+				resultElementList.extend(result['items'])
+				if result['nomore']:
+					break
+				resultCount += len(data["items"])
+				time.sleep(5)
 	return genProductList(resultElementList, wp)
 
 
