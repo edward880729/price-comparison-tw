@@ -213,9 +213,9 @@ def genProductList(productElementList: List[WebElement], wp: WatchProduct) -> Li
 				historyID = productElement["Id"]
 				shopID = ""
 				href = "https://24h.pchome.com.tw/prod/{}".format(historyID)
-		if not checkSaleState(wp.website, historyID, shopID):
+		if not checkBlackList(title, wp.blackList):
 			continue
-		if checkBlackList(title, wp.blackList):
+		if checkSaleState(wp.website, historyID, shopID):
 			resultList.append(SearchResult(wp.ID, title, price, historyID, href))
 	return resultList
 
