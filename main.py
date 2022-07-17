@@ -15,7 +15,7 @@ import configparser
 import concurrent.futures
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 config = config["MAIN"]
 
 DEBUG = config["DEBUG"]
@@ -52,7 +52,7 @@ class WatchProduct:
 				"name": self.name,
 				"minPrice": self.minPrice,
 			  	"maxPrice": self.maxPrice,
-			   	"blackList": ''.join(self.blackList),
+			   	"blackList": "".join(self.blackList),
 			    "sleepTime": self.sleepTime
 				}
 
@@ -177,7 +177,7 @@ class SearchResult:
 		else:
 			message = self.title + " $" + str(self.price) + " " + self.href
 
-		payload = {'message': message }
+		payload = {"message": message }
 		r = requests.post("https://notify-api.line.me/api/notify", headers = headers, params = payload)
 		return r.status_code
 	
@@ -202,9 +202,14 @@ def genProductList(productElementList: List[WebElement], wp: WatchProduct) -> Li
 				href = productElement.get_attribute("data-href")
 			case "shopee":
 				title = productElement["item_basic"]["name"]
-				price = int(productElement['item_basic']['price']/100000)
-				historyID = productElement['item_basic']['itemid']
-				href = "https://shopee.tw/product/{}/{}".format(productElement['item_basic']['shopid'], historyID)
+				price = int(productElement["item_basic"]["price"]/100000)
+				historyID = productElement["item_basic"]["itemid"]
+				href = "https://shopee.tw/product/{}/{}".format(productElement["item_basic"]["shopid"], historyID)
+			case "pchome":
+				title = productElement["name"]
+				price = int(productElement["price"])
+				historyID = productElement["Id"]
+				href = "https://24h.pchome.com.tw/prod/{}".format(historyID)
 		if checkBlackList(title, wp.blackList):
 			resultList.append(SearchResult(wp.ID, title, price, historyID, href))
 	return resultList
@@ -225,15 +230,23 @@ def getProductElementList(wp: WatchProduct) -> List[SearchResult]:
 				if len(resultElementList) >= resultCount:
 					break
 				page += 1
-				time.sleep(5)
 			case "shopee":
 				data = requests.get("https://shopee.tw/api/v4/search/search_items?by=price&keyword={}&limit=100&newest={}&order=asc&page_type=search&price_max={}&price_min={}&scenario=PAGE_GLOBAL_SEARCH&skip_autocorrect=1&version=2".format(wp.name, resultCount, wp.maxPrice, wp.minPrice))  
 				result = data.json()
-				resultElementList.extend(result['items'])
-				if result['nomore']:
+				resultElementList.extend(result["items"])
+				if result["nomore"]:
 					break
 				resultCount += len(data["items"])
-				time.sleep(5)
+			case "pchome":
+				data = requests.get("https://ecshweb.pchome.com.tw/search/v3.3/all/results?q={}&page={}&sort=prc/ac&price={}-{}".format(wp.name, page, wp.minPrice, wp.maxPrice))  
+				result = data.json()
+				if result["totalRows"] == 0:
+					break
+				resultElementList.extend(result["prods"])
+				if page == result["totalPage"]:
+					break
+				page += 1
+		time.sleep(5)
 	return genProductList(resultElementList, wp)
 
 

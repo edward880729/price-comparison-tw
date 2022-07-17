@@ -4,7 +4,7 @@
         "name": "mx%20anywhere%202s",
         "minPrice": 300,
         "maxPrice": 700, 
-        "blackList": ["包","袋","殼","電池","貼","腳","滾輪","G300s","正品","保護","炫光","POP","保護","折疊","宏","吃"],
+        "blackList": ["包","袋","殼","電池","貼","腳","滾輪","G300s","正品","保護","炫光","POP","保護","折疊","宏","吃","6D"],
         "sleepTime": 600
     },
     {
@@ -29,6 +29,14 @@
         "minPrice": 800,
         "maxPrice": 1800, 
         "blackList": ["包","袋","殼","電池","貼","腳","滾輪","優聯","國行","速發","大師","正品","保護"],
+        "sleepTime": 600
+    },
+    {
+        "website": "pchome",
+        "name": "mx anywhere 2s",
+        "minPrice": 300,
+        "maxPrice": 1000, 
+        "blackList": ["包","袋","殼"],
         "sleepTime": 600
     }
 ]
