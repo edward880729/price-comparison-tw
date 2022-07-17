@@ -199,17 +199,22 @@ def genProductList(productElementList: List[WebElement], wp: WatchProduct) -> Li
 				title = productElement.get_attribute("data-title")
 				price = int(productElement.get_attribute("data-price"))
 				historyID = productElement.get_attribute("data-historyid")
+				shopID = ""
 				href = productElement.get_attribute("data-href")
 			case "shopee":
 				title = productElement["item_basic"]["name"]
 				price = int(productElement["item_basic"]["price"]/100000)
 				historyID = productElement["item_basic"]["itemid"]
-				href = "https://shopee.tw/product/{}/{}".format(productElement["item_basic"]["shopid"], historyID)
+				shopID = productElement["item_basic"]["shopid"]
+				href = "https://shopee.tw/product/{}/{}".format(shopID, historyID)
 			case "pchome":
 				title = productElement["name"]
 				price = int(productElement["price"])
 				historyID = productElement["Id"]
+				shopID = ""
 				href = "https://24h.pchome.com.tw/prod/{}".format(historyID)
+		if not checkSaleState(wp.website, historyID, shopID):
+			continue
 		if checkBlackList(title, wp.blackList):
 			resultList.append(SearchResult(wp.ID, title, price, historyID, href))
 	return resultList
@@ -255,6 +260,20 @@ def checkBlackList(s: str, blackList: List[str]) -> bool:
 		if s.find(blackstr) >= 0:
 			return False
 	return True
+
+def checkSaleState(website: str, itemID: str, shopID: str) -> bool:
+	result = False
+	match website:
+		case "biggo":
+			result = True
+		case "shopee":
+			data = requests.get("https://shopee.tw/api/v4/item/get?itemid={}&shopid={}".format(itemID, shopID))  
+			if data.json()["data"]["item_status"] == "normal":
+				result = bool(data.json()["data"]["stock"]) #是否有庫存
+		case "pchome":
+			data = requests.get("https://ecapi.pchome.com.tw/ecshop/prodapi/v2/prod/button&id={}&fields=SaleStatus".format(itemID))  
+			result = bool(data.json()[0]["SaleStatus"]) #是否有上架
+	return result
 
 def getBrowser() -> WebDriver:
 	chrome_options = Options()
