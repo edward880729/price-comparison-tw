@@ -1,5 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// npx prisma db push
+// npx prisma generate
+// npx prisma studio
 
 generator client {
   provider = "prisma-client-js"
@@ -11,21 +14,35 @@ datasource db {
 }
 
 model WatchProduct {
-  watchProductID Int    @id @default(autoincrement())
+  watchProductID Int            @id @default(autoincrement())
   website        String
   keyword        String
   minPrice       Int
   maxPrice       Int
-  //filter String
   sleepTime      Int
+  filter         Filter[]
+  searchResult   SearchResult[]
+  isValid        Boolean
+  isNofication   Boolean
 }
 
 model SearchResult {
-  searchResultID Int      @id @default(autoincrement())
+  searchResultID Int           @id @default(autoincrement())
   watchProductID Int
-  title          String
+  watchProduct   WatchProduct? @relation(fields: [watchProductID], references: [watchProductID])
+  name           String
   price          Int
+  shopID         String
   itemID         String
   url            String
-  createDate     DateTime
+  imageUrl       String
+  createDate     DateTime      @default(now())
+}
+
+model Filter {
+  filterID       Int           @id @default(autoincrement())
+  watchProductID Int
+  watchProduct   WatchProduct? @relation(fields: [watchProductID], references: [watchProductID])
+  type           String
+  value          String
 }

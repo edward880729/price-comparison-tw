@@ -3,23 +3,18 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import prisma from '../lib/prisma';
-import { WatchProduct, SearchResult } from '@prisma/client';
+import { WatchProduct, SearchResult,Filter } from '@prisma/client';
 import axios from 'axios';
-
-type Person = {
-  name: string[];
-};
+import { useEffect, useState } from 'react';
 
 type Props = {
-  //feed: WatchProduct[];
-  //feed: SearchResult[];
-  feed: Person
+  searchResult: SearchResult[] 
 }; 
 
-const Home: React.FC<Props> = ({feed}) => {
+const Home: React.FC<Props> = ({searchResult}) => {
+  console.log(searchResult)
   return (
     <div className={styles.container}>
-      {feed.name.filter(x => !x.includes("小霖")).map(x => (<p>{x}</p>))  }
     </div>
   )
 }
@@ -28,20 +23,20 @@ const Home: React.FC<Props> = ({feed}) => {
 export const getStaticProps: GetStaticProps = async () => {
   if (typeof sessionStorage != "undefined" && sessionStorage.getItem("test"))
     return {
-      props: { feed: JSON.parse(sessionStorage.getItem("test") as string) },
+      props: { searchResult: JSON.parse(sessionStorage.getItem("searchResult") as string) },
     }
-  const response = await axios('http://localhost:3000/api/hello', {
+  const response = await axios('http://localhost:3000/api/search', {
     params: {
-      keyword: 'ㄅㄆㄇ'
+      website: 'shopee',
+      keyword: 'mx anywhere2',
+      minPrice: 100,
+      maxPrice: 600
     }
   })
   const result = await response.data
 
-  const feed = await prisma.searchResult.findMany({
-    where: {},
-  });
   return {
-    props: { feed: result },
+    props: { searchResult: result },
   };
 };
 
