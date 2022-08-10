@@ -2,88 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient} from '@prisma/client';
 import axios from 'axios';
+import { WatchProduct } from '../../classes/WatchProduct'
+import { ShopeeSearchResult, ShopeeSearchResultType } from '../../classes/SearchResult'
 
 const prisma = new PrismaClient()
-
-type value = {
-  value: string
-}
-
-class WatchProduct{
-  watchProductID: number
-  website: string
-  keyword: string
-  minPrice: number
-  maxPrice: number
-  sleepTime: number
-  isValid: boolean
-  constructor(website: string, keyword: string, minPrice: number, maxPrice: number, sleepTime: number = 600, isValid: boolean = true) {
-    this.watchProductID = 0
-    this.website = website
-    this.keyword = keyword
-    this.minPrice = minPrice
-    this.maxPrice = maxPrice
-    this.sleepTime = sleepTime
-    this.isValid = isValid
-  }
-  getWatchProductID = async () => {
-    const watchProduct = await prisma.watchProduct.findFirst({
-      where: {
-        website: this.website,
-        keyword: this.keyword,
-      },
-    })
-    let id = watchProduct?.watchProductID as number
-    
-    if (!id) {
-      const nextID = await prisma.$queryRaw<value[]>`select last_value+1 as value from "WatchProduct_watchProductID_seq"`
-      id = Number(nextID[0].value)
-    }
-    this.watchProductID = id
-  }
-}
-
-type ShopeeSearchResultType = {
-  name: string
-  price: number
-  shopid: string
-  itemid: string
-  //url: string
-  image: string
-}
-
-class SearchResult {
-  //searchResultID!: number;
-  watchProductID!: number;
-  name!: string;
-  price!: number;
-  shopID!: string;
-  itemID!: string;
-  url!: string;
-  image!: string;
-  createDate!: Date;
-}
-
-class ShopeeSearchResult extends SearchResult{
-
-  constructor(data: ShopeeSearchResultType, watchProductID: number) {
-    super();
-    //this.searchResultID = 0
-    this.watchProductID = watchProductID
-    this.name = data.name
-    this.price = data.price / 100000
-    this.shopID = data.shopid
-    this.itemID = data.itemid
-    this.url = `https://shopee.tw/product/${data.shopid}/${data.itemid}`
-    this.image = `https://cf.shopee.tw/file/${data.image}`
-  } 
-}
-
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ShopeeSearchResult[]>
-) {
+): Promise<void> {
   let { website, keyword, minPrice, maxPrice} = req.query
   const keywordURI = encodeURI(keyword as string)
   let result: ShopeeSearchResult[] = []
