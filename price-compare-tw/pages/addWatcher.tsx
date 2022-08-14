@@ -3,17 +3,19 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Image from 'next/image';
+import { SetStateAction, useState } from "react";
 
 type Props = {
-    website: string,
-    keyword: string,
-    minPrice: number,
-    maxPrice: number,
     searchResult: SearchResult[]
   };
 
 const Home = (props: Props) => {
-    let { website, keyword, minPrice, maxPrice, searchResult } = props;
+    let { searchResult } = props;
+
+    const [inputWebsite, setWebsite] = useState("shopee");
+    const [inputKeyword, setKeyword] = useState("");
+    const [inputMinPrice, setMinPrice] = useState(0);
+    const [inputMaxPrice, setMaxPrice] = useState(600);
 
     const router = useRouter();
     const search = (e: { preventDefault: () => void; }) => {
@@ -21,38 +23,21 @@ const Home = (props: Props) => {
         router.push({
             pathname: '/addWatcher',
             query: {
-                website: website,
-                keyword: keyword,
-                minPrice: minPrice,
-                maxPrice: maxPrice,
+                website: inputWebsite,
+                keyword: inputKeyword,
+                minPrice: inputMinPrice,
+                maxPrice: inputMaxPrice,
             },
         })
-    }
-
-    const handleChangeWebsite = (e: { preventDefault: () => void; target: { value: string; }; }) => {
-        e.preventDefault();
-        website = (e.target.value)
-    }
-    const handleChangeKeyword = (e: { preventDefault: () => void; target: { value: string; }; }) => {
-        e.preventDefault();
-        keyword = (e.target.value)
-    }
-    const handleChangeMin = (e: { preventDefault: () => void; target: { value: any; }; }) => {
-        e.preventDefault();
-        minPrice = (e.target.value) as number 
-    }
-    const handleChangeMax = (e: { preventDefault: () => void; target: { value: any; }; }) => {
-        e.preventDefault();
-        maxPrice = (e.target.value) as number
     }
 
     return (
         <div>
             <form className="m-10">
-                <input onChange={handleChangeWebsite} defaultValue={ "shopee" } type="text" placeholder="Website..." className="outline-none border-2 rounded-md pl-2" />
-                <input onChange={handleChangeKeyword} defaultValue={ keyword } type="text" placeholder="Search..." className="outline-none border-2 rounded-md pl-2" />
-                <input onChange={handleChangeMin} defaultValue={ 0 } type="number" placeholder="min..." className="outline-none border-2 rounded-md pl-2" />
-                <input onChange={handleChangeMax} defaultValue={ 300 } type="number" placeholder="max..." className="outline-none border-2 rounded-md pl-2" />
+                <input onChange={e => setWebsite(e.target.value)} defaultValue={ inputWebsite } type="text" placeholder="Website..." className="outline-none border-2 rounded-md pl-2" />
+                <input onChange={e => setKeyword(e.target.value)} defaultValue={ inputKeyword } type="text" placeholder="Search..." className="outline-none border-2 rounded-md pl-2" />
+                <input onChange={e => setMinPrice(e.target.valueAsNumber)} defaultValue={ inputMinPrice } type="number" placeholder="min..." className="outline-none border-2 rounded-md pl-2" />
+                <input onChange={e => setMaxPrice(e.target.valueAsNumber)} defaultValue={ inputMaxPrice } type="number" placeholder="max..." className="outline-none border-2 rounded-md pl-2" />
                 <button onClick={search}>Search</button>
             </form>
             <div className="grid gap-2 grid-cols-4">
@@ -89,10 +74,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
     const result: SearchResult[] = await response.data
     return {
         props: {
-            website: website as string,
-            keyword: keyword as string,
-            minPrice: minPrice as unknown as number,
-            maxPrice: maxPrice as unknown as number,
             searchResult: result
         },
     };
