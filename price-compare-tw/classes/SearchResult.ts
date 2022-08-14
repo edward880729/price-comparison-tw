@@ -19,7 +19,7 @@ export class SearchResult {
     shopID!: string;
     itemID!: string;
     url!: string;
-    image!: string;
+    imageUrl!: string;
     createDate!: Date;
 }
   
@@ -34,6 +34,11 @@ export class ShopeeSearchResult extends SearchResult{
         this.shopID = data.shopid
         this.itemID = data.itemid
         this.url = `https://shopee.tw/product/${data.shopid}/${data.itemid}`
-        this.image = `https://cf.shopee.tw/file/${data.image}`
+        if (data.image) {
+            this.imageUrl = `https://cf.shopee.tw/file/${data.image}`
+        }
+        else {
+            this.imageUrl = ``
+        }
     } 
 }
