@@ -12,7 +12,7 @@ interface Params {
 export function useProducts() {
   const [params, setParams] = useState<Params>({
     website: 'shopee',
-    keyword: 'mx anywhere2',
+    keyword: '',
     minPrice: 100,
     maxPrice: 600,
   });
@@ -27,7 +27,7 @@ export function useProducts() {
     return res.data;
   };
 
-  const { data, error } = useSWR(url, fetcher);
+  const { data, error } = useSWR(url, fetcher, { dedupingInterval: 10000 });
 
   return {
     params,
