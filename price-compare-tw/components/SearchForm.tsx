@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SearchForm = ({ params, setParams }: Props) => {
-  console.log(params);
+  //   console.log(params);
   return (
     <div>
       <form className="m-10">
