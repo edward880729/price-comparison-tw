@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Props {
   product: {
@@ -11,16 +12,20 @@ interface Props {
   };
 }
 
-const Product = ({ product }: Props) => {
+const Card = ({ product }: Props) => {
   return (
     <div className="max-w-[300px] border rounded-md">
-      <div>
-        <Image src={product.imageUrl} width={300} height={300} alt="" />
-      </div>
+      <Link href={`/products/${product?.itemID}`}>
+        <a>
+          <div>
+            <Image src={product.imageUrl} width={300} height={300} alt="" />
+          </div>
+        </a>
+      </Link>
       <p>{product.name}</p>
       <p>{product.price}</p>
     </div>
   );
 };
 
-export default Product;
+export default Card;

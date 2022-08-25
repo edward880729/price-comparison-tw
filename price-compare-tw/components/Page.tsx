@@ -1,5 +1,5 @@
 import { useProducts } from '../actions/products';
-import Product from './Product';
+import Card from './Card';
 
 interface products {
   imageUrl: string;
@@ -21,7 +21,7 @@ const Page = () => {
   return (
     <div className="grid gap-2 grid-cols-4 mt-10">
       {products?.map((product: products) => (
-        <Product key={product.itemID} product={product} />
+        <Card key={product.itemID} product={product} />
       ))}
     </div>
   );

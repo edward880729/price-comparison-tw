@@ -27,7 +27,7 @@ export function useProducts() {
     return res.data;
   };
 
-  const { data, error } = useSWR(url, fetcher);
+  const { data, error } = useSWR(url, fetcher, { dedupingInterval: 10000 });
 
   return {
     products: data,
@@ -36,29 +36,18 @@ export function useProducts() {
   };
 }
 
-// export function useProduct(id) {
-//   const [params, setParams] = useState<Params>({
-//     website: 'shopee',
-//     keyword: 'mx anywhere2',
-//     minPrice: 100,
-//     maxPrice: 600,
-//   });
+export function useProduct(id: string) {
+  const url = `/products/${id}`;
+  const fetcher = async (key: string) => {
+    const res = await axios.get(key);
+    return res.data;
+  };
 
-//   const url = `/api/search/${id}`;
-//   const fetcher = async (key: string) => {
-//     const res = await axios.get(key, {
-//       params: {
-//         ...params,
-//       },
-//     });
-//     return res.data;
-//   };
+  const { data, error } = useSWR(url, fetcher);
 
-//   const { data, error } = useSWR(url, fetcher);
-
-//   return {
-//     products: data,
-//     isLoading: !error && !data,
-//     isError: error,
-//   };
-// }
+  return {
+    product: data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}

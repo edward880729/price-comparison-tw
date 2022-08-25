@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface Params {
   website: string;
   keyword: string;
@@ -11,7 +13,8 @@ interface Props {
 }
 
 const SearchForm = ({ params, setParams }: Props) => {
-  //   console.log(params);
+  const [search, setSearch] = useState('');
+
   return (
     <div>
       <form className="m-10">
