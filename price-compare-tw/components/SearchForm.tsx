@@ -1,23 +1,17 @@
-import { useState } from 'react';
+import { useProducts } from '../actions/products';
 
-interface Params {
-  website: string;
-  keyword: string;
-  minPrice: number;
-  maxPrice: number;
-}
+const SearchForm = () => {
+  const { params, setParams } = useProducts();
 
-interface Props {
-  params: Params;
-  setParams: (value: Params) => void;
-}
+  // console.log(params);
 
-const SearchForm = ({ params, setParams }: Props) => {
-  const [search, setSearch] = useState('');
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
 
   return (
     <div>
-      <form className="m-10">
+      <form className="m-10" onSubmit={handleSubmit}>
         <input
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setParams({ ...params, website: e.target.value });
@@ -54,7 +48,7 @@ const SearchForm = ({ params, setParams }: Props) => {
           placeholder="max..."
           className="outline-none border-2 rounded-md pl-2"
         />
-        {/* <button onClick={search}>Search</button> */}
+        <button type="button">Search</button>
       </form>
     </div>
   );

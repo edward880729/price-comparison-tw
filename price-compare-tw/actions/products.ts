@@ -27,27 +27,29 @@ export function useProducts() {
     return res.data;
   };
 
-  const { data, error } = useSWR(url, fetcher, { dedupingInterval: 10000 });
+  const { data, error } = useSWR(url, fetcher);
 
   return {
+    params,
+    setParams,
     products: data,
     isLoading: !error && !data,
     isError: error,
   };
 }
 
-export function useProduct(id: string) {
-  const url = `/products/${id}`;
-  const fetcher = async (key: string) => {
-    const res = await axios.get(key);
-    return res.data;
-  };
+// export function useProduct(id: string) {
+//   const url = `/products/${id}`;
+//   const fetcher = async (key: string) => {
+//     const res = await axios.get(key);
+//     return res.data;
+//   };
 
-  const { data, error } = useSWR(url, fetcher);
+//   const { data, error } = useSWR(url, fetcher);
 
-  return {
-    product: data,
-    isLoading: !error && !data,
-    isError: error,
-  };
-}
+//   return {
+//     product: data,
+//     isLoading: !error && !data,
+//     isError: error,
+//   };
+// }
