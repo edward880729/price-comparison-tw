@@ -1,44 +1,48 @@
-import type { GetStaticProps, NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import prisma from '../lib/prisma';
-import { WatchProduct, SearchResult,Filter } from '@prisma/client';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Page from '../components/Page';
+import SearchForm from '../components/SearchForm';
 
-type Props = {
-  searchResult: SearchResult[] 
-}; 
-
-const Home: React.FC<Props> = ({searchResult}) => {
-  console.log(searchResult)
-  return (
-    <div className={styles.container}>
-    </div>
-  )
+interface Params {
+  website: string;
+  keyword: string;
+  minPrice: number;
+  maxPrice: number;
 }
 
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [params, setParams] = useState<Params>({
+    website: 'shopee',
+    keyword: '',
+    minPrice: 100,
+    maxPrice: 600,
+  });
+  // const [website, setWebsite] = useState('shopee');
+  // const [keyword, setKeyword] = useState('mx anywhere2');
+  // const [minPrice, setMinPrice] = useState(100);
+  // const [maxPrice, setMaxPrice] = useState(600);
 
-export const getStaticProps: GetStaticProps = async () => {
-  if (typeof sessionStorage != "undefined" && sessionStorage.getItem("test"))
-    return {
-      props: { searchResult: JSON.parse(sessionStorage.getItem("searchResult") as string) },
-    }
-  const response = await axios('http://localhost:3000/api/search', {
-    params: {
-      website: 'shopee',
-      keyword: 'mx anywhere2',
-      minPrice: 100,
-      maxPrice: 600
-    }
-  })
-  const result = await response.data
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get('/api/search', {
+        params: {
+          ...params,
+        },
+      });
+      console.log(response);
+      setProducts(response.data);
+    };
 
-  return {
-    props: { searchResult: result },
-  };
+    fetchData();
+  }, [params]);
+
+  return (
+    <div className="mx-auto">
+      <SearchForm params={params} setParams={setParams} />
+      <Page products={products} />
+    </div>
+  );
 };
 
-
-export default Home
+export default Home;
