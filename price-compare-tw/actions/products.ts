@@ -37,19 +37,3 @@ export function useProducts() {
     isError: error,
   };
 }
-
-// export function useProduct(id: string) {
-//   const url = `/products/${id}`;
-//   const fetcher = async (key: string) => {
-//     const res = await axios.get(key);
-//     return res.data;
-//   };
-
-//   const { data, error } = useSWR(url, fetcher);
-
-//   return {
-//     product: data,
-//     isLoading: !error && !data,
-//     isError: error,
-//   };
-// }
