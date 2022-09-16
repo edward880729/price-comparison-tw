@@ -31,24 +31,30 @@ export class WatchProduct {
           website: this.website,
           keyword: this.keyword,
         },
-      })
-      let id = watchProduct?.watchProductID as number
+      });
+      let id = watchProduct?.watchProductID as number;
       
       if (!id) {
-        const nextID = await prisma.$queryRaw<value[]>`select last_value+1 as value from "WatchProduct_watchProductID_seq"`
-        id = Number(nextID[0].value)
+        const nextID = await prisma.$queryRaw<value[]>`select last_value+1 as value from "WatchProduct_watchProductID_seq"`;
+        id = Number(nextID[0].value);
       }
-      this.watchProductID = id
+      this.watchProductID = id;
     }
-    insertOrUpdateToDB = async () => {
+  
+    isExistsInDB = async () => {
       const dbWatchProduct = await prisma.watchProduct.findFirst({
         where: {
           website: this.website,
           keyword: this.keyword,
         },
-      })
+      });
+      if (dbWatchProduct) return dbWatchProduct.watchProductID;
+      else return false;
+    }
   
-      if (!dbWatchProduct) {
+    insertOrUpdateToDB = async () => {
+      const dbWatchProductID = this.isExistsInDB();
+      if (!dbWatchProductID) {
         const watchProduct = await prisma.watchProduct.create({
           data: {
             website: this.website,
@@ -59,9 +65,9 @@ export class WatchProduct {
             isValid: this.isValid,
             isNofication: true,
           }
-        })
-        this.watchProductID = watchProduct.watchProductID
-        return watchProduct
+        });
+        this.watchProductID = watchProduct.watchProductID;
+        return watchProduct;
       }
       else {
         const watchProduct = await prisma.watchProduct.update({
@@ -75,10 +81,10 @@ export class WatchProduct {
             isNofication: this.isNofication,
           },
           where: {
-            watchProductID: dbWatchProduct.watchProductID
+            watchProductID: dbWatchProductID as unknown as number
           }
-        })
-        return watchProduct
+        });
+        return watchProduct;
       }
     }
   
@@ -87,7 +93,7 @@ export class WatchProduct {
         where: {
           watchProductID: this.watchProductID
         },
-      })
+      });
     }
   
   
