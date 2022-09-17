@@ -1,100 +1,140 @@
-import { PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient()
 
 type value = {
-    value: string
-  }
+  value: string
+}
 
 export class WatchProduct {
-    watchProductID: number
-    website: string
-    keyword: string
-    minPrice: number
-    maxPrice: number
-    sleepTime: number
-    isValid: boolean
-    isNofication: boolean
-    constructor(website: string, keyword: string, minPrice: number, maxPrice: number) {
-      this.watchProductID = 0
-      this.website = website
-      this.keyword = keyword
-      this.minPrice = minPrice
-      this.maxPrice = maxPrice
-      this.sleepTime = 600
-      this.isValid = true
-      this.isNofication = true
-    }
-    getWatchProductID = async () => {
-      const watchProduct = await prisma.watchProduct.findFirst({
+  watchProductID: number
+  website: string
+  keyword: string
+  minPrice: number
+  maxPrice: number
+  sleepTime: number
+  isValid: boolean
+  isNofication: boolean
+  hasNewResult: boolean
+  lastUpdateDate: Date
+  createDate: Date
+  modifyDate: Date
+  constructor(website: string, keyword: string, minPrice: number, maxPrice: number) {
+    this.watchProductID = 0
+    this.website = website
+    this.keyword = keyword
+    this.minPrice = minPrice
+    this.maxPrice = maxPrice
+    this.sleepTime = 600
+    this.isValid = true
+    this.isNofication = false
+    this.hasNewResult = false
+    this.lastUpdateDate = new Date("1911/01/01")
+    this.createDate = new Date()
+    this.modifyDate = new Date()
+    this.syncWatchProduct()
+  }
+
+  syncWatchProduct = async () => {
+    const watchProduct = await prisma.watchProduct.findFirst({
+      where: {
+        website: this.website,
+        keyword: this.keyword,
+      },
+    });
+    if (watchProduct != null) {
+      this.watchProductID = watchProduct.watchProductID;
+      this.sleepTime = watchProduct.sleepTime;
+      this.isValid = watchProduct.isValid;
+      this.isNofication = watchProduct.isNofication;
+      this.hasNewResult = watchProduct.hasNewResult;
+      this.lastUpdateDate = watchProduct.lastUpdateDate;
+      this.createDate = watchProduct.createDate;
+      this.modifyDate = watchProduct.modifyDate;
+      const hasNew = await prisma.searchResult.findFirst({
         where: {
-          website: this.website,
-          keyword: this.keyword,
+          watchProductID: this.watchProductID,
+          isNew: true
         },
       });
-      let id = watchProduct?.watchProductID as number;
-      
-      if (!id) {
-        const nextID = await prisma.$queryRaw<value[]>`select last_value+1 as value from "WatchProduct_watchProductID_seq"`;
-        id = Number(nextID[0].value);
-      }
+      if (hasNew) this.hasNewResult = true;
+    }
+    else {
+      const nextID = await prisma.$queryRaw<value[]>`select last_value+1 as value from "WatchProduct_watchProductID_seq"`;
+      let id = Number(nextID[0].value);
       this.watchProductID = id;
     }
-  
-    isExistsInDB = async () => {
-      const dbWatchProduct = await prisma.watchProduct.findFirst({
-        where: {
+  }
+
+  isExistsInDB = async () => {
+    const dbWatchProduct = await prisma.watchProduct.findFirst({
+      where: {
+        website: this.website,
+        keyword: this.keyword,
+      },
+    });
+    if (dbWatchProduct) return dbWatchProduct.watchProductID;
+    else return false;
+  }
+
+  insertOrUpdateToDB = async () => {
+    const dbWatchProductID = this.isExistsInDB();
+    if (!dbWatchProductID) {
+      const watchProduct = await prisma.watchProduct.create({
+        data: {
           website: this.website,
           keyword: this.keyword,
-        },
+          minPrice: this.minPrice,
+          maxPrice: this.maxPrice,
+          sleepTime: this.sleepTime,
+          isValid: this.isValid,
+          isNofication: true,
+          hasNewResult: false,
+          lastUpdateDate: this.lastUpdateDate,
+          createDate: this.createDate,
+          modifyDate: this.modifyDate,
+        }
       });
-      if (dbWatchProduct) return dbWatchProduct.watchProductID;
-      else return false;
+      this.watchProductID = watchProduct.watchProductID;
+      return watchProduct;
     }
-  
-    insertOrUpdateToDB = async () => {
-      const dbWatchProductID = this.isExistsInDB();
-      if (!dbWatchProductID) {
-        const watchProduct = await prisma.watchProduct.create({
-          data: {
-            website: this.website,
-            keyword: this.keyword,
-            minPrice: this.minPrice,
-            maxPrice: this.maxPrice,
-            sleepTime: this.sleepTime,
-            isValid: this.isValid,
-            isNofication: true,
-          }
-        });
-        this.watchProductID = watchProduct.watchProductID;
-        return watchProduct;
-      }
-      else {
-        const watchProduct = await prisma.watchProduct.update({
-          data: {
-            website: this.website,
-            keyword: this.keyword,
-            minPrice: this.minPrice,
-            maxPrice: this.maxPrice,
-            sleepTime: this.sleepTime,
-            isValid: this.isValid,
-            isNofication: this.isNofication,
-          },
-          where: {
-            watchProductID: dbWatchProductID as unknown as number
-          }
-        });
-        return watchProduct;
-      }
+    else {
+      const watchProduct = await prisma.watchProduct.update({
+        data: {
+          website: this.website,
+          keyword: this.keyword,
+          minPrice: this.minPrice,
+          maxPrice: this.maxPrice,
+          sleepTime: this.sleepTime,
+          isValid: this.isValid,
+          isNofication: this.isNofication,
+          modifyDate: new Date(),
+        },
+        where: {
+          watchProductID: dbWatchProductID as unknown as number
+        }
+      });
+      return watchProduct;
     }
-  
-    delete = async () => {
-      const dbWatchProduct = await prisma.watchProduct.delete({
+  }
+
+  delete = async () => {
+    const dbWatchProduct = await prisma.watchProduct.delete({
+      where: {
+        watchProductID: this.watchProductID
+      },
+    });
+  }
+
+  getSearchResult = async () => {
+    const searchResult = await prisma.searchResult.findMany(
+      {
         where: {
           watchProductID: this.watchProductID
         },
-      });
-    }
-  
-  
+      }
+    );
+    return searchResult;
+  }
+
 }

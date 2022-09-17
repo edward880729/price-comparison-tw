@@ -20,10 +20,14 @@ model WatchProduct {
   minPrice       Int
   maxPrice       Int
   sleepTime      Int
-  filter         Filter[]
-  searchResult   SearchResult[]
   isValid        Boolean
   isNofication   Boolean
+  hasNewResult   Boolean
+  lastUpdateDate DateTime
+  createDate     DateTime
+  modifyDate     DateTime
+  filter         Filter[]
+  searchResult   SearchResult[]
 }
 
 model SearchResult {
@@ -36,6 +40,8 @@ model SearchResult {
   itemID         String
   url            String
   imageUrl       String
+  isHide         Boolean
+  isNew          Boolean
   createDate     DateTime      @default(now())
 }
 
