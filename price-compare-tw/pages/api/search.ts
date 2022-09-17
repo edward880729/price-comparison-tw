@@ -19,7 +19,7 @@ export default async function handler(
   let statusCode = 500
   switch (website) {
     case "shopee":
-      const watchProduct = new WatchProduct(website, keyword as string, Number(minPrice), Number(maxPrice))
+      const watchProduct = new WatchProduct(undefined, website, keyword as string, Number(minPrice), Number(maxPrice))
       //await watchProduct.getWatchProductID()
 
       //console.log(watchProduct.watchProductID)

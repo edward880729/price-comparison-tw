@@ -19,12 +19,13 @@ export class WatchProduct {
   lastUpdateDate: Date
   createDate: Date
   modifyDate: Date
-  constructor(website: string, keyword: string, minPrice: number, maxPrice: number) {
+  constructor(watchProductID?: number, website?: string, keyword?: string, minPrice?: number, maxPrice?: number) {
+    //default
     this.watchProductID = 0
-    this.website = website
-    this.keyword = keyword
-    this.minPrice = minPrice
-    this.maxPrice = maxPrice
+    this.website = ""
+    this.keyword = ""
+    this.minPrice = 0
+    this.maxPrice = 0
     this.sleepTime = 600
     this.isValid = true
     this.isNofication = false
@@ -32,7 +33,38 @@ export class WatchProduct {
     this.lastUpdateDate = new Date("1911/01/01")
     this.createDate = new Date()
     this.modifyDate = new Date()
-    this.syncWatchProduct()
+
+    if (watchProductID != null) {
+      this.getWatchProductByID(watchProductID);
+    }
+    else {
+      this.watchProductID = 0;
+      this.website = website as string;
+      this.keyword = keyword as string;
+      this.minPrice = minPrice as number;
+      this.maxPrice = maxPrice as number;
+      this.sleepTime = 600;
+      this.isValid = true;
+      this.isNofication = false;
+      this.hasNewResult = false;
+      this.lastUpdateDate = new Date("1911/01/01");
+      this.createDate = new Date();
+      this.modifyDate = new Date();
+      this.syncWatchProduct();
+    }
+  }
+
+  getWatchProductByID = async (watchProductID: number) => {
+    const watchProduct = await prisma.watchProduct.findFirst({
+      where: {
+        watchProductID: watchProductID,
+      },
+    });
+    if (watchProduct) {
+      this.website = watchProduct.website;
+      this.keyword = watchProduct.keyword;
+      this.syncWatchProduct();
+    }
   }
 
   syncWatchProduct = async () => {
@@ -124,6 +156,11 @@ export class WatchProduct {
         watchProductID: this.watchProductID
       },
     });
+  }
+
+  disable = async (disable: boolean) => {
+    this.isValid = !disable;
+    this.insertOrUpdateToDB();
   }
 
   getSearchResult = async () => {
