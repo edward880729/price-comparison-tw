@@ -1,46 +1,15 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Page from '../components/Page';
-import SearchForm from '../components/SearchForm';
-
-interface Params {
-  website: string;
-  keyword: string;
-  minPrice: number;
-  maxPrice: number;
-}
+import Link from 'next/link';
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [params, setParams] = useState<Params>({
-    website: 'shopee',
-    keyword: '',
-    minPrice: 100,
-    maxPrice: 600,
-  });
-  // const [website, setWebsite] = useState('shopee');
-  // const [keyword, setKeyword] = useState('mx anywhere2');
-  // const [minPrice, setMinPrice] = useState(100);
-  // const [maxPrice, setMaxPrice] = useState(600);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get('/api/search', {
-        params: {
-          ...params,
-        },
-      });
-      console.log(response);
-      setProducts(response.data);
-    };
-
-    fetchData();
-  }, [params]);
-
   return (
-    <div className="mx-auto">
-      <SearchForm params={params} setParams={setParams} />
-      <Page products={products} />
+    <div className='container mx-auto'>
+      <div className='mt-10'>
+        <Link href='search'>
+          <div className='w-56 h-56 flex items-center justify-center text-8xl border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 hover:bg-blue-500 hover:text-white duration-300'>
+            +
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };

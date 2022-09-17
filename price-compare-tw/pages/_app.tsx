@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import Header from '../components/Header';
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'http://localhost:3000';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

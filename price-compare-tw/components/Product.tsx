@@ -13,12 +13,23 @@ interface Props {
 
 const Product = ({ product }: Props) => {
   return (
-    <div className="max-w-[300px] border rounded-md">
+    <div className='max-w-max border border-gray-500 rounded-md'>
       <div>
-        <Image src={product.imageUrl} width={300} height={300} alt="" />
+        <Image
+          src={product.imageUrl}
+          width={250}
+          height={150}
+          alt=''
+          objectFit='contain'
+        />
       </div>
-      <p>{product.name}</p>
-      <p>{product.price}</p>
+      <div className='flex flex-col justify-between'>
+        <p className='max-w-[230px] text-center text-sm'>{product.name}</p>
+        <p className='text-red-600'>
+          <span className='text-xs'>$</span>
+          {product.price}
+        </p>
+      </div>
     </div>
   );
 };

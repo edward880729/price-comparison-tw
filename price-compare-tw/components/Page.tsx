@@ -13,11 +13,11 @@ interface Props {
 
 const Page = ({ products }: Props) => {
   return (
-    <div className="grid gap-2 grid-cols-4 mt-10">
-      {products.map((product) => (
+    <>
+      {products?.map((product) => (
         <Product key={product.itemID} product={product} />
       ))}
-    </div>
+    </>
   );
 };
 
