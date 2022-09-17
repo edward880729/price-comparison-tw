@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import { WatchProduct } from '../../classes/WatchProduct'
-import { ShopeeSearchResult, ShopeeSearchResultType } from '../../classes/SearchResult'
+import { SearchResult, ShopeeSearchResult, ShopeeSearchResultType } from '../../classes/SearchResult'
 
 const prisma = new PrismaClient()
 
@@ -11,7 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ShopeeSearchResult[]>
 ): Promise<void> {
-  let { website, keyword, minPrice, maxPrice } = req.query
+  let { website, keyword, minPrice, maxPrice, isSave } = req.query
   if (!keyword || keyword == '') return res.status(200).json([]) //Todo 
   const keywordURI = encodeURI(keyword as string)
   let result: ShopeeSearchResult[] = []
@@ -35,15 +35,22 @@ export default async function handler(
 
         resultCount += responseResult.length
         if (response.data.nomore == true) {
-          console.log(resultCount, "break")
-          break
+          console.log(resultCount, "break");
+          break;
         }
+        //test
+        break;
       }
       break
     case "pchome":
       break
     case "biggo":
       break
+  }
+  if (isSave) {
+    result.forEach(searchResult => {
+      searchResult.insertOrUpdateToDB();
+    });
   }
   res.status(statusCode).json(result)
 }
