@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -30,8 +31,21 @@ const SearchForm = ({ params, setParams }: Props) => {
     setWebsite(e.target.value);
   };
 
-  const handleClick = () => {
-    if (keyword) router.push('/');
+  const handleClick = async () => {
+    try {
+      const res = await axios.get('/api/insertWatchProduct', {
+        params: {
+          keyword,
+          website,
+          minPrice,
+          maxPrice,
+        },
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error.response);
+    }
+    // router.push('/');
   };
 
   return (

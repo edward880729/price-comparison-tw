@@ -14,8 +14,8 @@ interface Props {
 const Page = ({ products }: Props) => {
   return (
     <>
-      {products?.map((product) => (
-        <Product key={product.itemID} product={product} />
+      {products?.map((product, index) => (
+        <Product key={index} product={product} />
       ))}
     </>
   );

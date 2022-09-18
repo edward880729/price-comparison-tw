@@ -1,6 +1,11 @@
 import Link from 'next/link';
+import useAxios from '../hooks/useAxios';
 
 const Home = () => {
+  const { params, setParams } = useAxios();
+
+  console.log(params);
+
   return (
     <div className='container mx-auto'>
       <div className='mt-10'>

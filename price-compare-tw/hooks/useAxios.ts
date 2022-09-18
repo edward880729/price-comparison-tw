@@ -30,7 +30,7 @@ const useAxios = () => {
         });
         setResponse(response.data);
       } catch (err) {
-        setError(err);
+        // setError(err);
       } finally {
         setIsLoading(false);
       }
