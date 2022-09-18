@@ -1,11 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import { WatchProduct } from '../../classes/WatchProduct'
-import { SearchResult, ShopeeSearchResult, ShopeeSearchResultType } from '../../classes/SearchResult'
-
-const prisma = new PrismaClient()
+import { ShopeeSearchResult, ShopeeSearchResultType } from '../../classes/SearchResult'
 
 export default async function handler(
   req: NextApiRequest,

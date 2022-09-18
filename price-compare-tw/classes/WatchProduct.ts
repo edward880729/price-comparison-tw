@@ -1,6 +1,5 @@
-import { PrismaClient, SearchResult } from '@prisma/client';
-
-const prisma = new PrismaClient()
+import { SearchResult } from '@prisma/client';
+import prisma from '../lib/prisma'
 
 type value = {
   value: string

@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient, SearchResult } from '@prisma/client';
-
-const prisma = new PrismaClient()
+import { SearchResult } from '@prisma/client';
+import prisma from '../../../lib/prisma'
 
 export default async function getSearchResultList(
     req: NextApiRequest,

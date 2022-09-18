@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient, WatchProduct } from '@prisma/client';
+import { WatchProduct } from '@prisma/client';
+import prisma from '../../lib/prisma'
 
-const prisma = new PrismaClient()
 
 export default async function getWatchProductList(
   req: NextApiRequest,
