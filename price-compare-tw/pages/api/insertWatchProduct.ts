@@ -8,7 +8,7 @@ export default async function insertWatchProduct(
   let { website, keyword, minPrice, maxPrice } = req.query;
   let result = "";
   let statusCode;
-  if (!keyword || keyword == '') {
+  if (website == undefined || keyword == undefined || keyword == '') {
     statusCode = 400;
     result = "條件請輸入完整";
   }
@@ -16,7 +16,7 @@ export default async function insertWatchProduct(
   const watchProduct = new WatchProduct(undefined, website as string, keyword as string, Number(minPrice), Number(maxPrice));
   if (await watchProduct.isExistsInDB()) {
     statusCode = 400;
-    result = "已有相同之尋找商品";
+    result = "已存在相同搜尋設定";
   }
   else {
     watchProduct.insertOrUpdateToDB();

@@ -68,7 +68,7 @@ export class SearchResult {
     }
 
     insertOrUpdateToDB = async () => {
-        const dbsearchResult = this.isExistinDB();
+        const dbsearchResult = await this.isExistinDB();
         if (!dbsearchResult) {
             const searchResult = await prisma.searchResult.create({
                 data: {

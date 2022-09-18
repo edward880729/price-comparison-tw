@@ -110,7 +110,7 @@ export class WatchProduct {
   }
 
   insertOrUpdateToDB = async () => {
-    const dbWatchProductID = this.isExistsInDB();
+    const dbWatchProductID = await this.isExistsInDB();
     if (!dbWatchProductID) {
       const watchProduct = await prisma.watchProduct.create({
         data: {
