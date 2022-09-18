@@ -124,8 +124,8 @@ export class ShopeeSearchResult extends SearchResult {
         this.watchProductID = watchProductID;
         this.name = data.name;
         this.price = data.price / 100000;
-        this.shopID = data.shopid;
-        this.itemID = data.itemid;
+        this.shopID = String(data.shopid);
+        this.itemID = String(data.itemid);
         this.url = `https://shopee.tw/product/${data.shopid}/${data.itemid}`
         if (data.image) {
             this.imageUrl = `https://cf.shopee.tw/file/${data.image}`

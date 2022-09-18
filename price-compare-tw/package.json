@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cron": "node tools/cron.js",
+    "devcron": "start npm run cron && start npm run dev"
   },
   "dependencies": {
     "@prisma/client": "^4.1.1",
     "@tanstack/react-query": "^4.2.3",
     "axios": "^0.27.2",
+    "cron": "^2.1.0",
     "next": "12.2.4",
+    "node-cron": "^3.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
@@ -20,6 +24,7 @@
     "swr": "^1.3.0"
   },
   "devDependencies": {
+    "@types/cron": "^2.0.0",
     "@types/node": "18.6.4",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",

@@ -9,16 +9,12 @@ export default async function handler(
     res: NextApiResponse<string>
 ): Promise<void> {
     const watchProductList = await prisma.watchProduct.findMany();
-    watchProductList.forEach(element => {
-        async () => {
-            const response = await axios.get('/api/update', {
-                params: {
-                    watchProductID: element.watchProductID
-                },
-            });
-            console.log(response);
-        }
+    watchProductList.forEach(async element => {
+        await axios.get('http://' + req.headers.host + '/api/updateSearchResult', {
+            params: {
+                watchProductID: element.watchProductID
+            },
+        });
     });
-    console.log("update complete");
     return res.status(200).json("update complete");
 }

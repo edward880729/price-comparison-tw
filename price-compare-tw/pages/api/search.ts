@@ -20,9 +20,6 @@ export default async function handler(
   switch (website) {
     case "shopee":
       const watchProduct = new WatchProduct(undefined, website, keyword as string, Number(minPrice), Number(maxPrice))
-      //await watchProduct.getWatchProductID()
-
-      //console.log(watchProduct.watchProductID)
 
       while (1) {
         const response = await axios(`https://shopee.tw/api/v4/search/search_items?by=price&keyword=${keywordURI}&limit=100&newest=${resultCount}&order=asc&page_type=search&price_max=${maxPrice}&price_min=${minPrice}&scenario=PAGE_GLOBAL_SEARCH&skip_autocorrect=1&version=2`)
@@ -47,6 +44,7 @@ export default async function handler(
     case "biggo":
       break
   }
+
   if (isSave) {
     result.forEach(searchResult => {
       searchResult.insertOrUpdateToDB();
