@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SearchResult } from '@prisma/client';
 
 const prisma = new PrismaClient()
 
@@ -19,6 +19,8 @@ export class WatchProduct {
   lastUpdateDate: Date
   createDate: Date
   modifyDate: Date
+  searchResult: SearchResult[]
+
   constructor(watchProductID?: number, website?: string, keyword?: string, minPrice?: number, maxPrice?: number) {
     //default
     this.watchProductID = 0
@@ -33,6 +35,7 @@ export class WatchProduct {
     this.lastUpdateDate = new Date("1911/01/01")
     this.createDate = new Date()
     this.modifyDate = new Date()
+    this.searchResult = []
 
     if (watchProductID != null) {
       this.getWatchProductByID(watchProductID);
@@ -51,6 +54,7 @@ export class WatchProduct {
       this.createDate = new Date();
       this.modifyDate = new Date();
       this.syncWatchProduct();
+      this.getSearchResult();
     }
   }
 
@@ -63,7 +67,7 @@ export class WatchProduct {
     if (watchProduct) {
       this.website = watchProduct.website;
       this.keyword = watchProduct.keyword;
-      this.syncWatchProduct();
+      await this.syncWatchProduct();
     }
   }
 
@@ -171,6 +175,7 @@ export class WatchProduct {
         },
       }
     );
+    if (searchResult) this.searchResult = searchResult;
     return searchResult;
   }
 
