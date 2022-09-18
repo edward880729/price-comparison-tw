@@ -33,8 +33,20 @@ const SearchForm = ({ params, setParams }: Props) => {
     setWebsite(e.target.value);
   };
 
-  const notify = () =>
+  const notifySuccess = () =>
     toast.success('新增成功', {
+      position: 'bottom-left',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    });
+
+  const notifyError = () =>
+    toast.error('已存在相同搜尋結果', {
       position: 'bottom-left',
       autoClose: 1000,
       hideProgressBar: false,
@@ -55,10 +67,10 @@ const SearchForm = ({ params, setParams }: Props) => {
           maxPrice,
         },
       });
-      res.status === 201 && notify();
-      console.log(res.status);
+      notifySuccess();
+      console.log(res);
     } catch (error) {
-      console.log(error.response);
+      notifyError();
     }
     // router.push('/');
   };
