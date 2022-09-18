@@ -5,7 +5,7 @@ import { TbListSearch } from 'react-icons/tb';
 
 const Header = () => {
   return (
-    <div className='h-14 w-full flex justify-between items-center py-4 px-10 border-b'>
+    <div className='h-14 w-full flex justify-between items-center py-4 px-10 border-b sticky top-0 left-0 z-50 bg-white'>
       <button className='lg:hidden'>
         <TbListSearch size={25} />
       </button>

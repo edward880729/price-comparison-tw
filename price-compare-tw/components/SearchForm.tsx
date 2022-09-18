@@ -2,6 +2,8 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Params {
   website: string;
@@ -31,6 +33,18 @@ const SearchForm = ({ params, setParams }: Props) => {
     setWebsite(e.target.value);
   };
 
+  const notify = () =>
+    toast.success('新增成功', {
+      position: 'bottom-left',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    });
+
   const handleClick = async () => {
     try {
       const res = await axios.get('/api/insertWatchProduct', {
@@ -41,7 +55,8 @@ const SearchForm = ({ params, setParams }: Props) => {
           maxPrice,
         },
       });
-      console.log(res);
+      res.status === 201 && notify();
+      console.log(res.status);
     } catch (error) {
       console.log(error.response);
     }
@@ -118,13 +133,14 @@ const SearchForm = ({ params, setParams }: Props) => {
         </button>
         <button
           className='py-1 mx-16 border rounded-md bg-sky-500 text-white enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
-          type='submit'
+          type='button'
           onClick={handleClick}
           disabled={!keyword || !website}
         >
           新增
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };
