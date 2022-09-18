@@ -1,7 +1,18 @@
+import axios from 'axios';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import useAxios from '../hooks/useAxios';
 
 const Home = () => {
+  const fetchData = async () => {
+    const res = await axios.get('/api/getWatchProductList');
+    console.log(res);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className='container mx-auto'>
       <div className='mt-10'>
