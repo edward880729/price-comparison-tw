@@ -13,8 +13,12 @@ const Search = () => {
   return (
     <div className='mx-auto flex'>
       <SearchForm params={params} setParams={setParams} />
-      <div className='mx-auto px-2 grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-10'>
-        {isLoading ? <Skeleton items={20} /> : <Page products={products} />}
+      <div className='flex items-center'>
+        {isLoading ? (
+          <Skeleton items={20} />
+        ) : products.toString() ? (
+          <Page products={products} />
+        ) : null}
       </div>
     </div>
   );

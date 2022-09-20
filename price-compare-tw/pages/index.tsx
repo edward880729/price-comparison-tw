@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import InsertProducts from '../components/home/InsertProducts';
 
 const Home = ({ data }) => {
