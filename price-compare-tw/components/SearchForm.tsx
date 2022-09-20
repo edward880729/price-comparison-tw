@@ -91,7 +91,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
           </label>
           <select
             onChange={handleWebsiteChange}
-            className='w-4/5 outline-none border-2 rounded-md'
+            className='w-4/5 outline-none border-2 rounded-md text-gray-700'
           >
             <option defaultValue=''>請選擇網站</option>
             <option value='shopee'>Shopee</option>
@@ -111,7 +111,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
             type='text'
             placeholder='ex: iPhone 14'
             required
-            className='w-4/5 outline-none border-2 rounded-md pl-1'
+            className='w-4/5 outline-none border-2 rounded-md pl-1 text-gray-700'
           />
         </div>
         <div className='flex space-x-1 justify-between items-center'>
@@ -124,7 +124,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
               value={minPrice}
               type='number'
               placeholder='min...'
-              className='outline-none border-2 rounded-md pl-2 max-w-[100px]'
+              className='outline-none border-2 rounded-md pl-2 max-w-[100px] text-gray-700'
             />
             ~
             <input
@@ -134,20 +134,20 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
               value={maxPrice}
               type='number'
               placeholder='max...'
-              className='outline-none border-2 rounded-md pl-2 max-w-[100px]'
+              className='outline-none border-2 rounded-md pl-2 max-w-[100px] text-gray-700'
             />
           </div>
         </div>
 
         <button
-          className='py-1 mx-16 border rounded-md bg-red-500 text-white enabled:hover:bg-red-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='py-1 mx-16 border rounded-md bg-red-500 text-gray-100 enabled:hover:bg-red-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='submit'
           disabled={canClickButton}
         >
           搜尋
         </button>
         <button
-          className='py-1 mx-16 border rounded-md bg-sky-500 text-white enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='py-1 mx-16 border rounded-md bg-sky-500 text-gray-100 enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='button'
           onClick={handleClick}
           disabled={canClickButton}

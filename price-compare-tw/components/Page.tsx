@@ -20,22 +20,22 @@ const Page = ({ products }: Props) => {
     setSortByLessPrice(!sortByLessPrice);
 
     if (sortByLessPrice) return products.sort((a, b) => a.price - b.price);
-
     return products.sort((a, b) => b.price - a.price);
   };
 
   return (
-    <div>
-      <div className='flex items-center justify-center py-5'>
+    <div className='mx-1'>
+      <div className='flex items-center justify-center mt-5'>
         <button
           onClick={handleSortByPrice}
-          className='flex items-center text-2xl'
+          className='flex items-center text-xl'
         >
           價格
           {sortByLessPrice ? <HiSortAscending /> : <HiSortDescending />}
         </button>
       </div>
-      <div className='mx-auto px-2 grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+      <hr />
+      <div className='mx-auto mt-3 px-2 grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
         {products?.map((product, index) => (
           <Product key={index} product={product} />
         ))}

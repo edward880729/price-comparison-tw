@@ -14,7 +14,7 @@ interface Props {
 const Product = ({ product }: Props) => {
   return (
     <div className='max-w-max border border-gray-500 rounded-md'>
-      <div>
+      <div className='border-b mb-1'>
         <Image
           src={product.imageUrl}
           width={250}
@@ -24,8 +24,11 @@ const Product = ({ product }: Props) => {
         />
       </div>
       <div className='flex flex-col justify-between'>
-        <p className='max-w-[230px] text-center text-sm'>{product.name}</p>
-        <p className='text-red-600'>
+        <p className='w-full text-center text-sm'>
+          {product.name.split('', 30)} {product.name.length > 30 && '...'}
+        </p>
+        <hr className='mx-2' />
+        <p className='text-red-600 mx-2 my-2'>
           <span className='text-xs'>$</span>
           {product.price}
         </p>
