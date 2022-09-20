@@ -3,6 +3,8 @@ import Link from 'next/link';
 import InsertProducts from '../components/home/InsertProducts';
 
 const Home = ({ data }) => {
+  console.log(data);
+
   return (
     <div className='container mx-auto'>
       <div className='h-full flex flex-wrap space-x-6 md:mx-auto mt-10'>
