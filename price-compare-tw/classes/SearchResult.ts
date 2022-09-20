@@ -85,7 +85,7 @@ export class SearchResult {
         }
         else {
             if (this.price != await this.getLastPrice()) {
-                const searchResult = await prisma.searchResult.update({
+                const searchResult = await prisma.searchResult.updateMany({
                     data: {
                         name: this.name,
                         price: this.price,
@@ -94,7 +94,8 @@ export class SearchResult {
                         isNew: true,
                     },
                     where: {
-                        searchResultID: this.searchResultID
+                        shopID: this.shopID,
+                        itemID: this.itemID,
                     }
                 });
                 return searchResult;
