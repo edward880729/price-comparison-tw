@@ -5,10 +5,6 @@ import useAxios from '../hooks/useAxios';
 
 const Search = () => {
   const { response: products, isLoading, params, setParams } = useAxios();
-  //   isLoading && return <h1 className='text-8xl'>Loading...</h1>
-  //   if (isLoading) {
-  //     return <h1 className='text-8xl'>Loading...</h1>;
-  //   }
 
   return (
     <div className='mx-auto flex'>

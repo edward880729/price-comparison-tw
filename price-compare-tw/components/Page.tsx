@@ -19,11 +19,9 @@ const Page = ({ products }: Props) => {
   const handleSortByPrice = () => {
     setSortByLessPrice(!sortByLessPrice);
 
-    if (sortByLessPrice === true) {
-      return products.sort((a, b) => a.price - b.price);
-    } else {
-      return products.sort((a, b) => b.price - a.price);
-    }
+    if (sortByLessPrice) return products.sort((a, b) => a.price - b.price);
+
+    return products.sort((a, b) => b.price - a.price);
   };
 
   return (
