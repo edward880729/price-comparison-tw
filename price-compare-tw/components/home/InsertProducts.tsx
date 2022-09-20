@@ -6,14 +6,15 @@ interface Props {
 }
 
 function InsertProducts({ item }: Props) {
-  // console.log(item.searchResult[0]);
-  const [randomResult, setRandomResult] = useState(0);
+  console.log(item);
+  // const [randomResult, setRandomResult] = useState(0);
 
-  useEffect(() => {
-    setRandomResult(Math.floor(Math.random() * item.searchResult.length));
-  }, [item.searchResult]);
+  // useEffect(() => {
+  //   setRandomResult(Math.floor(Math.random() * item.searchResult.length));
+  // }, [item.searchResult]);
 
-  const randomProduct = item?.searchResult[randomResult];
+  const randomProduct =
+    item?.searchResult[Math.floor(Math.random() * item.searchResult.length)];
 
   return (
     <div className='max-w-[224px] min-h-[224px] mb-2 flex items-center justify-center border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 duration-300'>
@@ -28,10 +29,7 @@ function InsertProducts({ item }: Props) {
           />
         </div>
         <div className='h-full flex flex-col justify-between'>
-          <p className='text-sm mb-1'>
-            {/* {item?.searchResult[randomResult].name.split('', 30)}{' '} */}
-            <span>{randomProduct.length > 30 && '...'}</span>
-          </p>
+          <p className='text-sm mb-1'>關鍵字: {item?.keyword}</p>
           <p className='text-red-500'>最低價:</p>
         </div>
       </div>
