@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface Props {
   item: [];
@@ -6,7 +7,12 @@ interface Props {
 
 function InsertProducts({ item }: Props) {
   // console.log(item.searchResult[0]);
-  const randomResult = Math.floor(Math.random() * item.searchResult.length);
+  const [randomResult, setRandomResult] = useState(0);
+
+  useEffect(() => {
+    setRandomResult(Math.floor(Math.random() * item.searchResult.length));
+  }, [item.searchResult]);
+
   const randomProduct = item?.searchResult[randomResult];
 
   return (
@@ -21,10 +27,10 @@ function InsertProducts({ item }: Props) {
             objectFit='contain'
           />
         </div>
-        <div className='flex flex-col justify-between h-full'>
+        <div className='h-full flex flex-col justify-between'>
           <p className='text-sm mb-1'>
-            {randomProduct.name.split('', 30)}{' '}
-            {randomProduct.name.length > 30 && '...'}
+            {/* {item?.searchResult[randomResult].name.split('', 30)}{' '} */}
+            <span>{randomProduct.length > 30 && '...'}</span>
           </p>
           <p className='text-red-500'>最低價:</p>
         </div>
