@@ -15,9 +15,10 @@ interface Params {
 interface Props {
   params: Params;
   setParams: (value: Params) => void;
+  isLoading: boolean;
 }
 
-const SearchForm = ({ params, setParams }: Props) => {
+const SearchForm = ({ params, setParams, isLoading }: Props) => {
   const [keyword, setKeyword] = useState('');
   const [website, setWebsite] = useState('');
   const [minPrice, setMinPrice] = useState(100);
@@ -68,12 +69,14 @@ const SearchForm = ({ params, setParams }: Props) => {
         },
       });
       notifySuccess();
-      console.log(res);
     } catch (error) {
       notifyError();
     }
     // router.push('/');
   };
+
+  const canClickButton =
+    !keyword || !website || website === '請選擇網站' || !maxPrice || isLoading;
 
   return (
     <div className='hidden lg:block min-w-[350px]'>
@@ -139,7 +142,7 @@ const SearchForm = ({ params, setParams }: Props) => {
         <button
           className='py-1 mx-16 border rounded-md bg-red-500 text-white enabled:hover:bg-red-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='submit'
-          disabled={!keyword || !website}
+          disabled={canClickButton}
         >
           搜尋
         </button>
@@ -147,7 +150,7 @@ const SearchForm = ({ params, setParams }: Props) => {
           className='py-1 mx-16 border rounded-md bg-sky-500 text-white enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='button'
           onClick={handleClick}
-          disabled={!keyword || !website}
+          disabled={canClickButton}
         >
           新增
         </button>

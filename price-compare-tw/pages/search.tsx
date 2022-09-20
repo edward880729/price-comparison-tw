@@ -12,7 +12,7 @@ const Search = () => {
 
   return (
     <div className='mx-auto flex'>
-      <SearchForm params={params} setParams={setParams} />
+      <SearchForm params={params} setParams={setParams} isLoading={isLoading} />
       <div className='flex items-center'>
         {isLoading ? (
           <Skeleton items={20} />
