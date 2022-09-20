@@ -28,7 +28,7 @@ const Page = ({ products }: Props) => {
       <div className='flex items-center justify-center mt-5'>
         <button
           onClick={handleSortByPrice}
-          className='flex items-center text-xl'
+          className='flex items-center text-xl hover:text-white duration-150'
         >
           價格
           {sortByLessPrice ? <HiSortAscending /> : <HiSortDescending />}

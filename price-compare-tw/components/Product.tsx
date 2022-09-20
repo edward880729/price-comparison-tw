@@ -13,8 +13,8 @@ interface Props {
 
 const Product = ({ product }: Props) => {
   return (
-    <div className='max-w-max border border-gray-500 rounded-md'>
-      <div className='border-b mb-1'>
+    <div className='max-w-[250px] border border-gray-500 rounded-md'>
+      <div className='border-b mb-1 pt-1'>
         <Image
           src={product.imageUrl}
           width={250}
@@ -24,7 +24,7 @@ const Product = ({ product }: Props) => {
         />
       </div>
       <div className='flex flex-col justify-between'>
-        <p className='w-full text-center text-sm'>
+        <p className='w-full text-center text-sm h-16'>
           {product.name.split('', 30)} {product.name.length > 30 && '...'}
         </p>
         <hr className='mx-2' />

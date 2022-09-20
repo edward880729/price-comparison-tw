@@ -140,14 +140,14 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
         </div>
 
         <button
-          className='py-1 mx-16 border rounded-md bg-red-500 text-gray-100 enabled:hover:bg-red-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='py-1 mx-16 border rounded-md bg-red-500 text-gray-200 hover:text-white enabled:hover:bg-red-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='submit'
           disabled={canClickButton}
         >
           搜尋
         </button>
         <button
-          className='py-1 mx-16 border rounded-md bg-sky-500 text-gray-100 enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='py-1 mx-16 border rounded-md bg-sky-500 text-gray-200 hover:text-white enabled:hover:bg-sky-600 duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
           type='button'
           onClick={handleClick}
           disabled={canClickButton}
