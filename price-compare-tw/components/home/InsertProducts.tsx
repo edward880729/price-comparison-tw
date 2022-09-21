@@ -34,7 +34,6 @@ type searchResult = {
 };
 
 function InsertProducts({ item }: Props) {
-  console.log(item);
   const randomProduct =
     item?.searchResult[Math.floor(Math.random() * item.searchResult.length)];
 
@@ -46,6 +45,9 @@ function InsertProducts({ item }: Props) {
   } else if (item.website === 'pchome') {
     websiteTitle = 'text-red-500 border-red-500';
   }
+
+  const getAllPrice = item.searchResult.map((result) => result.price);
+  const filterMinPrice = Math.min(...getAllPrice);
 
   return (
     <div className='max-w-[224px] min-h-[224px] mb-2 flex items-center justify-center border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 duration-300 insertProductBG'>
@@ -70,7 +72,7 @@ function InsertProducts({ item }: Props) {
         </div>
         <div className='h-full flex flex-col justify-between'>
           <p className='text-md mb-1'>關鍵字: {item?.keyword}</p>
-          <p className='text-red-500'>最低價:</p>
+          <p className='text-red-500'>最低價: {filterMinPrice}</p>
         </div>
       </div>
     </div>
