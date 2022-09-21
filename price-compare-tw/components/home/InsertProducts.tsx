@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 interface Props {
   item: item;
@@ -36,7 +35,6 @@ type searchResult = {
 
 function InsertProducts({ item }: Props) {
   console.log(item);
-
   const randomProduct =
     item?.searchResult[Math.floor(Math.random() * item.searchResult.length)];
 
@@ -60,6 +58,7 @@ function InsertProducts({ item }: Props) {
             height={130}
             objectFit='contain'
           />
+
           <p
             className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${websiteTitle}`}
           >

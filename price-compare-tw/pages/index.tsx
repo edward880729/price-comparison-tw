@@ -11,7 +11,7 @@ const Home = ({ data }) => {
             +
           </div>
         </Link>
-        {data?.map((item: [], index: number) => (
+        {data?.map((item, index: number) => (
           <InsertProducts key={index} item={item} />
         ))}
       </div>
