@@ -2,21 +2,52 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface Props {
-  item: [];
+  item: item;
 }
+
+interface item {
+  createDate: string;
+  hasNewResult: boolean;
+  isNofication: boolean;
+  isValid: boolean;
+  keyword: string;
+  lastUpdateDate: string;
+  maxPrice: number;
+  minPrice: number;
+  searchResult: searchResult[];
+  sleepTime: number;
+  watchProductID: number;
+  website: string;
+}
+
+type searchResult = {
+  createDate: string;
+  imageUrl: string;
+  isHide: boolean;
+  isNew: boolean;
+  itemID: string;
+  name: string;
+  price: number;
+  searchResultID: number;
+  shopID: string;
+  url: string;
+  watchProductID: number;
+};
 
 function InsertProducts({ item }: Props) {
   console.log(item);
-  // const [randomResult, setRandomResult] = useState(0);
-
-  // useEffect(() => {
-  //   setRandomResult(Math.floor(Math.random() * item.searchResult.length));
-  // }, [item.searchResult]);
 
   const randomProduct =
     item?.searchResult[Math.floor(Math.random() * item.searchResult.length)];
 
-  const shopeeColor = 'text-[#FB5533] border-[#FB5533]';
+  let websiteTitle;
+  if (item.website === 'shopee') {
+    websiteTitle = 'text-[#FB5533] border-[#FB5533]';
+  } else if (item.website === 'biggo') {
+    websiteTitle = 'text-[#00BDC2] border-[#00BDC2]';
+  } else if (item.website === 'pchome') {
+    websiteTitle = 'text-red-500 border-red-500';
+  }
 
   return (
     <div className='max-w-[224px] min-h-[224px] mb-2 flex items-center justify-center border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 duration-300 insertProductBG'>
@@ -30,7 +61,7 @@ function InsertProducts({ item }: Props) {
             objectFit='contain'
           />
           <p
-            className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${shopeeColor}`}
+            className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${websiteTitle}`}
           >
             {item.website}
           </p>
