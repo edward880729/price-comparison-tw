@@ -48,7 +48,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
 
   const notifyError = (statusCode: number | unknown) => {
     let message: string;
-    if (statusCode === 404) {
+    if (statusCode === 400) {
       message = '已存在相同搜尋結果';
     } else {
       message = '新增發生錯誤';
