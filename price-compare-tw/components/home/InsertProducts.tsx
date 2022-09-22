@@ -1,37 +1,9 @@
 import Image from 'next/image';
+import { insertProductsData } from '../../typing';
 
 interface Props {
-  item: item;
+  item: insertProductsData;
 }
-
-interface item {
-  createDate: string;
-  hasNewResult: boolean;
-  isNofication: boolean;
-  isValid: boolean;
-  keyword: string;
-  lastUpdateDate: string;
-  maxPrice: number;
-  minPrice: number;
-  searchResult: searchResult[];
-  sleepTime: number;
-  watchProductID: number;
-  website: string;
-}
-
-type searchResult = {
-  createDate: string;
-  imageUrl: string;
-  isHide: boolean;
-  isNew: boolean;
-  itemID: string;
-  name: string;
-  price: number;
-  searchResultID: number;
-  shopID: string;
-  url: string;
-  watchProductID: number;
-};
 
 function InsertProducts({ item }: Props) {
   const randomProduct =

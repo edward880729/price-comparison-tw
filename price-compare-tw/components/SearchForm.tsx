@@ -76,7 +76,13 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
   };
 
   const canClickButton =
-    !keyword || !website || website === '請選擇網站' || !maxPrice || isLoading;
+    !keyword ||
+    !website ||
+    website === '請選擇網站' ||
+    maxPrice <= 0 ||
+    minPrice < 0 ||
+    maxPrice < minPrice ||
+    isLoading;
 
   return (
     <div className='hidden lg:block min-w-[350px]'>
