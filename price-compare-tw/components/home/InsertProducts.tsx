@@ -32,7 +32,6 @@ function InsertProducts({ item }: Props) {
             height={130}
             objectFit='contain'
           />
-
           <p
             className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${websiteTitle}`}
           >
