@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -46,8 +46,15 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
       theme: 'dark',
     });
 
-  const notifyError = () =>
-    toast.error('已存在相同搜尋結果', {
+  const notifyError = (statusCode: number | unknown) => {
+    let message: string;
+    if (statusCode === 400) {
+      message = '已存在相同搜尋結果';
+    } else {
+      message = '新增發生錯誤';
+    }
+
+    toast.error(message, {
       position: 'bottom-left',
       autoClose: 1000,
       hideProgressBar: false,
@@ -57,6 +64,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
       progress: undefined,
       theme: 'dark',
     });
+  };
 
   const handleClick = async () => {
     try {
@@ -70,13 +78,21 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
       });
       notifySuccess();
     } catch (error) {
-      notifyError();
+      const err = error as AxiosError;
+      const statusCode = err.response?.status;
+      notifyError(statusCode);
     }
     // router.push('/');
   };
 
   const canClickButton =
-    !keyword || !website || website === '請選擇網站' || !maxPrice || isLoading;
+    !keyword ||
+    !website ||
+    website === '請選擇網站' ||
+    maxPrice <= 0 ||
+    minPrice < 0 ||
+    maxPrice < minPrice ||
+    isLoading;
 
   return (
     <div className='hidden lg:block min-w-[350px]'>

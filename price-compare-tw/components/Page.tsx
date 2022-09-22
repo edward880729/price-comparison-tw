@@ -1,5 +1,5 @@
 import Product from './Product';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi';
 
 interface Props {
@@ -14,14 +14,15 @@ interface Props {
 }
 
 const Page = ({ products }: Props) => {
-  const [sortByLessPrice, setSortByLessPrice] = useState(true);
+  const [sortByLessPrice, setSortByLessPrice] = useState<boolean | null>(null);
 
   const handleSortByPrice = () => {
     setSortByLessPrice(!sortByLessPrice);
 
-    if (sortByLessPrice) return products.sort((a, b) => a.price - b.price);
-    return products.sort((a, b) => b.price - a.price);
+    if (sortByLessPrice) return products.sort((a, b) => b.price - a.price);
+    return products.sort((a, b) => a.price - b.price);
   };
+  console.log(sortByLessPrice);
 
   return (
     <div className='mx-1'>
