@@ -15,10 +15,12 @@ const Search = () => {
 
   return (
     <>
-      <motion.div
-        className='h-1 bg-red-600 sticky z-50 top-12 left-0'
-        style={{ scaleX }}
-      />
+      {products.toString() && (
+        <motion.div
+          className='h-1 bg-red-600 sticky z-50 top-12 left-0'
+          style={{ scaleX }}
+        />
+      )}
       <div className='mx-auto flex'>
         <SearchForm
           params={params}
