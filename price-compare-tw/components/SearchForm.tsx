@@ -46,14 +46,7 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
       theme: 'dark',
     });
 
-  const notifyError = (statusCode: number | unknown) => {
-    let message: string;
-    if (statusCode === 400) {
-      message = '已存在相同搜尋結果';
-    } else {
-      message = '新增發生錯誤';
-    }
-
+  const notifyError = (message: string) => {
     toast.error(message, {
       position: 'bottom-left',
       autoClose: 1000,
@@ -76,11 +69,16 @@ const SearchForm = ({ params, setParams, isLoading }: Props) => {
           maxPrice,
         },
       });
-      notifySuccess();
+      if (res.status === 201) {
+        notifySuccess();
+      } else if (res.status === 200) {
+        notifyError(res.data);
+      }
+      console.log(res);
     } catch (error) {
       const err = error as AxiosError;
-      const statusCode = err.response?.status;
-      notifyError(statusCode);
+      const message = err.message;
+      notifyError(message);
     }
     // router.push('/');
   };

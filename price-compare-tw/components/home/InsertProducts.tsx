@@ -10,14 +10,22 @@ function InsertProducts({ item }: Props) {
   const [randomProduct, setRandomProduct] = useState(0);
 
   useEffect(() => {
+    let randomIndex = 0;
+    while (1) {
+      const idx = Math.floor(Math.random() * item.searchResult.length);
+      if (idx != randomProduct || item.searchResult.length == 1) {
+        randomIndex = idx;
+        break;
+      }
+    }
     const interval = setInterval(() => {
-      setRandomProduct(Math.floor(Math.random() * item.searchResult.length));
-    }, 3000);
+      setRandomProduct(randomIndex);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [item.searchResult]);
+  }, [randomProduct, item.searchResult]);
 
   const randomProductImage = item?.searchResult[randomProduct];
 
