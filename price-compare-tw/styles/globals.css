@@ -12,10 +12,10 @@ body {
 .insertProductBG {
   background-image: linear-gradient(
     to bottom,
-    #ececec,
-    #acacac,
-    #6f6f6f,
-    #393939,
-    #020202
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 1)
   );
 }
