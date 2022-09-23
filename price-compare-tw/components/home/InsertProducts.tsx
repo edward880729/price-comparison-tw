@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { insertProductsData } from '../../typing';
 
 interface Props {
@@ -6,8 +7,19 @@ interface Props {
 }
 
 function InsertProducts({ item }: Props) {
-  const randomProduct =
-    item?.searchResult[Math.floor(Math.random() * item.searchResult.length)];
+  const [randomProduct, setRandomProduct] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRandomProduct(Math.floor(Math.random() * item.searchResult.length));
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [item.searchResult]);
+
+  const randomProductImage = item?.searchResult[randomProduct];
 
   let websiteTitle;
   if (item.website === 'shopee') {
@@ -22,7 +34,7 @@ function InsertProducts({ item }: Props) {
   const filterMinPrice = Math.min(...getAllPrice);
 
   const styling = {
-    backgroundImage: `url('${randomProduct?.imageUrl}')`,
+    backgroundImage: `url('${randomProductImage?.imageUrl}')`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
