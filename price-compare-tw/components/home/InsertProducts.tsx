@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { insertProductsData } from '../../typing';
 
@@ -51,28 +52,30 @@ function InsertProducts({ item }: Props) {
   };
 
   return (
-    <div className='w-[224px] min-h-[224px] mb-2 flex items-center justify-center border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 duration-300 insertProductBG'>
-      <div
-        className='relative flex flex-col justify-start h-full'
-        style={styling}
-      >
-        <div className='w-full h-full absolute insertProductBG z-0'></div>
-        <div className='relative border-gray-500 z-10'>
-          <p
-            className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${websiteTitle}`}
-          >
-            {item.website}
-          </p>
-          <p className='absolute top-1 right-1 px-2 bg-red-600 rounded-full'>
-            New
-          </p>
-        </div>
-        <div className='h-full flex flex-col justify-end z-10'>
-          <p className='text-md mb-1'>關鍵字: {item?.keyword}</p>
-          <p className='text-red-500'>最低價: {filterMinPrice}</p>
+    <Link href={`/products/${item.watchProductID}`}>
+      <div className='w-[224px] min-h-[224px] mb-2 flex items-center justify-center border-2 border-gray-500 rounded-md cursor-pointer hover:shadow-xl hover:scale-105 duration-300 insertProductBG'>
+        <div
+          className='relative flex flex-col justify-start h-full'
+          style={styling}
+        >
+          <div className='w-full h-full absolute insertProductBG z-0'></div>
+          <div className='relative border-gray-500 z-10'>
+            <p
+              className={`absolute top-1 left-1 px-2 bg-white border rounded-md z-10 ${websiteTitle}`}
+            >
+              {item.website}
+            </p>
+            <p className='absolute top-1 right-1 px-2 bg-red-600 rounded-full'>
+              New
+            </p>
+          </div>
+          <div className='h-full flex flex-col justify-end z-10'>
+            <p className='text-md mb-1'>關鍵字: {item?.keyword}</p>
+            <p className='text-red-500'>最低價: {filterMinPrice}</p>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

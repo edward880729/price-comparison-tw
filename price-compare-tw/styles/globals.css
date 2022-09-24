@@ -9,6 +9,18 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+table {
+  @apply table-auto border-collapse border border-slate-500 mx-auto;
+}
+
+th {
+  @apply border border-slate-700;
+}
+
+td {
+  @apply border border-slate-700 px-2 py-1;
+}
+
 .insertProductBG {
   background-image: linear-gradient(
     to bottom,
@@ -18,4 +30,8 @@ body {
     rgba(0, 0, 0, 0.7),
     rgba(0, 0, 0, 1)
   );
+}
+
+.paginationBtn {
+  @apply enabled:hover:text-white duration-150 disabled:opacity-30 disabled:hover:cursor-not-allowed;
 }
