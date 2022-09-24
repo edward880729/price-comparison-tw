@@ -53,7 +53,7 @@ export class WatchProduct {
       this.createDate = new Date();
       this.modifyDate = new Date();
       this.syncWatchProduct();
-      this.getSearchResult();
+      //this.getSearchResult();
     }
   }
 
