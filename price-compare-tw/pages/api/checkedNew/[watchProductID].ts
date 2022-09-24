@@ -9,8 +9,8 @@ export default async function disableWatchProduct(
     const { watchProductID } = req.query;
     let watchProduct = new WatchProduct(Number(watchProductID))
     const searchResultList = await watchProduct.getSearchResult();
-    searchResultList.forEach(searchResult => {
-        prisma.searchResult.update({
+    searchResultList.forEach(async searchResult => {
+        await prisma.searchResult.updateMany({
             data: {
                 isNew: false,
             },

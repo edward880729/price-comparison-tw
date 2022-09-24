@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { SearchResult } from '@prisma/client';
 import prisma from '../../../lib/prisma'
 
-export default async function getSearchResultList(
+export default async function getSearchResult(
     req: NextApiRequest,
     res: NextApiResponse<SearchResult[]>
 ): Promise<void> {

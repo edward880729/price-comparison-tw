@@ -37,6 +37,7 @@ export class WatchProduct {
     this.searchResult = []
 
     if (watchProductID != null) {
+      this.watchProductID = watchProductID;
       this.getWatchProductByID(watchProductID);
     }
     else {
